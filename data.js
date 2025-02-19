@@ -47,7 +47,9 @@ const pathData = [
                 image: "station3.jpg",
                 description: "This is Station 6.",
                 gallery: ["image5.jpg", "image6.jpg"],
-
+            
+                x: 1347.97,  // Add X coordinate
+                y: 2192.37   // Add Y coordinate
                
             }
         ]
@@ -62,14 +64,18 @@ const pathData = [
                 title: "Station 3",
                 image: "station3.jpg",
                 description: "This is Station 3.",
-                gallery: ["image5.jpg", "image6.jpg"]
+                gallery: ["image5.jpg", "image6.jpg"],
+                x: 1047.97,  // Add X coordinate
+                y: 2092.37   // Add Y coordinate
             },
             {
                 id: "station4",
                 title: "Station 4",
                 image: "station3.jpg",
                 description: "This is Station 6.",
-                gallery: ["image5.jpg", "image6.jpg"]
+                gallery: ["image5.jpg", "image6.jpg"],
+                x: 4347.97,  // Add X coordinate
+                y: 3192.37   // Add Y coordinate
             }
         ]
     },

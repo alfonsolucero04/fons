@@ -88,29 +88,27 @@ function displaySVG(data) {
         const pathElement = createSVGElement("path", { d: path.d, id: path.id });
         pathElement.classList.add(`path-${path.id}`);
 
-path.stations.forEach(station => {
-    const locator = createSVGElement("image", {
-        href: "test/image/locator.png",
-        x: station.x - 12,  // Use X from data.js
-        y: station.y - 12,  // Use Y from data.js
-        width: 150,
-        height: 150,
-        class: "locator"
-    });
+        path.stations.forEach(station => {
+            // Create locator for each station in the path
+            const locator = createSVGElement("image", {
+                href: "test/image/locator.png",
+                x: station.x - 12,  // Use X from data.js
+                y: station.y - 12,  // Use Y from data.js
+                width: 150,
+                height: 150,
+                class: `locator path-${path.id}`
+            });
 
-    locator.addEventListener("mouseover", (event) => {
-        displayTooltip(event, station);
-    });
+            locator.addEventListener("mouseover", (event) => {
+                displayTooltip(event, station);
+            });
 
-    locator.addEventListener("click", () => {
-        displayStationDetails(station);
-    });
+            locator.addEventListener("click", () => {
+                displayStationDetails(station);
+            });
 
-    svg.appendChild(locator);
-});
-
-
-
+            svg.appendChild(locator);
+        });
 
         // Add hover event listener to highlight paths with the same ID
         pathElement.addEventListener("mouseover", (event) => {
@@ -202,8 +200,6 @@ path.stations.forEach(station => {
         });
     });
 
-    
-
     // Function to clear existing tooltips
     function clearTooltips() {
         const tooltips = document.querySelectorAll('.tooltip');
@@ -227,53 +223,45 @@ path.stations.forEach(station => {
         `;
     }
 
+    // Start of DISPLAYING SINGLE PATH
 
-    //Start of DISPLAYING SINGLE PATH
+    // Function to display single path SVG
+    function displaySinglePath(path) {
+        const coordinates = document.getElementById('coordinates');
+        const xCoord = document.getElementById('xCoord');
+        const yCoord = document.getElementById('yCoord');
+        const svg = document.getElementById("svgContainer");
+        const backLink = document.getElementById("backLink");
+        const locator = document.getElementById('locator');
+        svg.innerHTML = ''; // Clear current SVG content
 
-   // Function to display single path SVG
-function displaySinglePath(path) {
+        // Remove drag and zoom event listeners
+        svg.removeEventListener('wheel', zoomHandler);
+        svg.removeEventListener('mousedown', startDrag);
+        svg.removeEventListener('mousemove', drag);
+        svg.removeEventListener('mouseup', endDrag);
+        svg.removeEventListener('mouseleave', endDrag);
 
-    
-    const coordinates = document.getElementById('coordinates');
-    const xCoord = document.getElementById('xCoord');
-    const yCoord = document.getElementById('yCoord');
-    const svg = document.getElementById("svgContainer");
-    const backLink = document.getElementById("backLink");
-    const locator = document.getElementById('locator');
-    svg.innerHTML = ''; // Clear current SVG content
+        // Create the tooltip container
+        const tooltipContainer = document.createElement("div");
+        tooltipContainer.classList.add("tooltip-container");
+        document.body.appendChild(tooltipContainer);
 
-    
+        // Find all paths with the same ID
+        const pathsWithSameId = pathData.filter(p => p.id === path.id);
 
-    // Remove drag and zoom event listeners
-    svg.removeEventListener('wheel', zoomHandler);
-    svg.removeEventListener('mousedown', startDrag);
-    svg.removeEventListener('mousemove', drag);
-    svg.removeEventListener('mouseup', endDrag);
-    svg.removeEventListener('mouseleave', endDrag);
+        pathsWithSameId.forEach(p => {
+            const pathElement = createSVGElement("path", { d: p.d, id: p.id });
+            pathElement.classList.add(`path-${p.id}`, 'fade-in-path'); // Add fade-in-path class
 
-    // Create the tooltip container
-    const tooltipContainer = document.createElement("div");
-    tooltipContainer.classList.add("tooltip-container");
-    document.body.appendChild(tooltipContainer);
-
-    // Find all paths with the same ID
-    const pathsWithSameId = pathData.filter(p => p.id === path.id);
-
-    pathsWithSameId.forEach(p => {
-        const pathElement = createSVGElement("path", { d: p.d, id: p.id });
-        pathElement.classList.add(`path-${p.id}`, 'fade-in-path'); // Add fade-in-path class
-
-      
-
-        path.stations.forEach(station => {
-            if (station.id) { // ✅ Ensure station has an ID before creating locator
+            path.stations.forEach(station => {
                 const locator = createSVGElement("image", {
                     href: "test/image/locator.png",
                     x: station.x - 12,
                     y: station.y - 12,
                     width: 150,
                     height: 150,
-                    class: "locator"
+                    class: `locator path-${path.id}`
                 });
 
                 locator.addEventListener("mouseover", (event) => {
@@ -285,178 +273,138 @@ function displaySinglePath(path) {
                 });
 
                 svg.appendChild(locator);
-            }
-        });
-        
-
-function displaySinglePath(path) {
-    const svg = document.getElementById("svgContainer");
-    svg.innerHTML = ''; // Clear previous content
-
-    // Find all paths with the same ID
-    const pathsWithSameId = pathData.filter(p => p.id === path.id);
-    const pathElements = [];
-
-    // Add all matching paths to the SVG
-    pathsWithSameId.forEach(p => {
-        const pathElement = createSVGElement("path", { d: p.d, id: p.id });
-        svg.appendChild(pathElement);
-        pathElements.push(pathElement);
-    });
-
-
-}
-
-
-
-
-        // Add click event listener to display path details
-        pathElement.addEventListener("click", (event) => {
-            displayPathDetails(p);
-        });
-
-
-       // Function to manually set locator position
-       function setLocatorPosition(x, y) {
-        locator.setAttribute('x', x - 12); // Centering the locator (24px wide)
-        locator.setAttribute('y', y - 12);
-
-        locator.setAttribute('width', 100);  // Change to your preferred size
-        locator.setAttribute('height', 100);
-    }
-
-    // Example: Manually set the locator at (1000, 1500) in SVG coordinates
-    setLocatorPosition(1360, 1993.70);
-
-        // Add the path element to the SVG container
-        svg.appendChild(pathElement);
-
-        // Add event listener to display tooltip on mouseover
-        pathElement.addEventListener("mouseover", (event) => {
-            clearTooltips();
-
-            const tooltip = document.createElement("div");
-            tooltip.classList.add("tooltip");
-
-            const ul = document.createElement("ul");
-            p.stations.forEach(station => {
-                const li = document.createElement("li");
-                li.textContent = station.id;
-                ul.appendChild(li);
             });
 
-            tooltip.appendChild(ul);
-            tooltipContainer.appendChild(tooltip);
+            // Add click event listener to display path details
+            pathElement.addEventListener("click", (event) => {
+                displayPathDetails(p);
+            });
 
-            const updateTooltipPosition = (e) => {
-                tooltip.style.display = "block";
-                setTimeout(() => {
-                    tooltip.style.opacity = 1; // Fade-in effect
-                }, 200); // Add delay before fading in
-                tooltip.style.left = `${e.pageX + 10}px`;
-                tooltip.style.top = `${e.pageY + 10}px`;
-            };
+            // Function to manually set locator position
+            function setLocatorPosition(x, y) {
+                locator.setAttribute('x', x - 12); // Centering the locator (24px wide)
+                locator.setAttribute('y', y - 12);
 
-            updateTooltipPosition(event);
-
-            // Clear the tooltips when mouse is out of the path or tooltip
-            pathElement.addEventListener("mouseout", hideTooltip);
-            tooltip.addEventListener("mouseout", hideTooltip);
-
-            function hideTooltip() {
-                hideTooltipTimeout = setTimeout(() => {
-                    tooltip.style.opacity = 0; // Reset opacity for next fade-in
-                    setTimeout(() => {
-                        tooltip.style.display = "none";
-                    }, 500); // Increased delay to allow for fade-out
-                }, 200); // Add a slight delay before hiding the tooltip
+                locator.setAttribute('width', 100);  // Change to your preferred size
+                locator.setAttribute('height', 100);
             }
+
+            // Example: Manually set the locator at (1000, 1500) in SVG coordinates
+            setLocatorPosition(1360, 1993.70);
+
+            // Add the path element to the SVG container
+            svg.appendChild(pathElement);
+
+            // Add event listener to display tooltip on mouseover
+            pathElement.addEventListener("mouseover", (event) => {
+                clearTooltips();
+
+                const tooltip = document.createElement("div");
+                tooltip.classList.add("tooltip");
+
+                const ul = document.createElement("ul");
+                p.stations.forEach(station => {
+                    const li = document.createElement("li");
+                    li.textContent = station.id;
+                    ul.appendChild(li);
+                });
+
+                tooltip.appendChild(ul);
+                tooltipContainer.appendChild(tooltip);
+
+                const updateTooltipPosition = (e) => {
+                    tooltip.style.display = "block";
+                    setTimeout(() => {
+                        tooltip.style.opacity = 1; // Fade-in effect
+                    }, 200); // Add delay before fading in
+                    tooltip.style.left = `${e.pageX + 10}px`;
+                    tooltip.style.top = `${e.pageY + 10}px`;
+                };
+
+                updateTooltipPosition(event);
+
+                // Clear the tooltips when mouse is out of the path or tooltip
+                pathElement.addEventListener("mouseout", hideTooltip);
+                tooltip.addEventListener("mouseout", hideTooltip);
+
+                function hideTooltip() {
+                    hideTooltipTimeout = setTimeout(() => {
+                        tooltip.style.opacity = 0; // Reset opacity for next fade-in
+                        setTimeout(() => {
+                            tooltip.style.display = "none";
+                        }, 500); // Increased delay to allow for fade-out
+                    }, 200); // Add a slight delay before hiding the tooltip
+                }
+            });
         });
-    });
 
-    
-    // Add the locator back to the SVG container
-    svg.appendChild(locator);
+        // Add the locator back to the SVG container
+        svg.appendChild(locator);
 
+        // Adjust SVG viewBox and position to center the paths
+        const bbox = svg.getBBox();
+        const viewBox = `${bbox.x - 20} ${bbox.y - 20} ${bbox.width + 40} ${bbox.height + 40}`;
+        svg.setAttribute('viewBox', viewBox);
 
-    // Adjust SVG viewBox and position to center the paths
-    const bbox = svg.getBBox();
-    const viewBox = `${bbox.x - 20} ${bbox.y - 20} ${bbox.width + 40} ${bbox.height + 40}`;
-    svg.setAttribute('viewBox', viewBox);
+        // Display the back link to return to the full map view
+        backLink.style.display = 'block';
+        backLink.addEventListener("click", (event) => {
+            event.preventDefault();
+            svg.classList.add('fade-in'); // Add fade-in class to SVG container
+            svg.setAttribute('viewBox', '800 600 500 6200');
+            backLink.style.display = 'none';
+            enableZoomAndDrag(); // Re-enable zoom and drag event listeners
+            displaySVG(pathData); // Reset to display all paths
+        });
 
-    // Display the back link to return to the full map view
-    backLink.style.display = 'block';
-    backLink.addEventListener("click", (event) => {
+        // Mousemove event to track SVG coordinates
+        svg.addEventListener('mousemove', (event) => {
+            const point = svg.createSVGPoint();
+            point.x = event.clientX;
+            point.y = event.clientY;
+
+            // Convert screen coordinates to SVG coordinates
+            const svgPoint = point.matrixTransform(svg.getScreenCTM().inverse());
+
+            // Display coordinates
+            xCoord.textContent = svgPoint.x.toFixed(2);
+            yCoord.textContent = svgPoint.y.toFixed(2);
+
+            // Show coordinates tooltip near the cursor
+            coordinates.style.left = `${event.clientX + 10}px`;
+            coordinates.style.top = `${event.clientY + 10}px`;
+            coordinates.style.display = 'block';
+        });
+
+        // Hide coordinates on mouseout
+        svg.addEventListener('mouseout', () => {
+            coordinates.style.display = 'none';
+        });
+    }
+
+    // END OF DISPLAY SINGLE PATH
+
+    // Function to enable zoom and drag event listeners
+    function enableZoomAndDrag() {
+        const svg = document.getElementById("svgContainer");
+        svg.addEventListener('wheel', zoomHandler);
+        svg.addEventListener('mousedown', startDrag);
+        svg.addEventListener('mousemove', drag);
+        svg.addEventListener('mouseup', endDrag);
+        svg.addEventListener('mouseleave', endDrag);
+    }
+
+    // Zoom handler function
+    function zoomHandler(event) {
         event.preventDefault();
-        svg.classList.add('fade-in'); // Add fade-in class to SVG container
-        svg.setAttribute('viewBox', '800 600 500 6200');
-        backLink.style.display = 'none';
-        enableZoomAndDrag(); // Re-enable zoom and drag event listeners
-        displaySVG(pathData); // Reset to display all paths
+        const delta = event.deltaY < 0 ? 0.1 : -0.1;
+        zoom(delta);
+    }
+
+    // Call enableZoomAndDrag when the document is loaded
+    document.addEventListener("DOMContentLoaded", () => {
+        enableZoomAndDrag();
     });
-
-
-    
-    
-
-
-
-    // Mousemove event to track SVG coordinates
-    svg.addEventListener('mousemove', (event) => {
-        const point = svg.createSVGPoint();
-        point.x = event.clientX;
-        point.y = event.clientY;
-
-        // Convert screen coordinates to SVG coordinates
-        const svgPoint = point.matrixTransform(svg.getScreenCTM().inverse());
-
-        // Display coordinates
-        xCoord.textContent = svgPoint.x.toFixed(2);
-        yCoord.textContent = svgPoint.y.toFixed(2);
-
-
-        // Show coordinates tooltip near the cursor
-        coordinates.style.left = `${event.clientX + 10}px`;
-        coordinates.style.top = `${event.clientY + 10}px`;
-        coordinates.style.display = 'block';
-    });
-
-    // Hide coordinates on mouseout
-    svg.addEventListener('mouseout', () => {
-        coordinates.style.display = 'none';
-    });
-
-
-}
-
-
-// END OF DISPLAY SINGLE PATH
-
-
-
-
-// Function to enable zoom and drag event listeners
-function enableZoomAndDrag() {
-    const svg = document.getElementById("svgContainer");
-    svg.addEventListener('wheel', zoomHandler);
-    svg.addEventListener('mousedown', startDrag);
-    svg.addEventListener('mousemove', drag);
-    svg.addEventListener('mouseup', endDrag);
-    svg.addEventListener('mouseleave', endDrag);
-}
-
-// Zoom handler function
-function zoomHandler(event) {
-    event.preventDefault();
-    const delta = event.deltaY < 0 ? 0.1 : -0.1;
-    zoom(delta);
-}
-
-// Call enableZoomAndDrag when the document is loaded
-document.addEventListener("DOMContentLoaded", () => {
-    enableZoomAndDrag();
-});
-
 
     // Function to display path details on the left container
     function displayPathDetails(path) {
@@ -490,5 +438,3 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     displaySVG(pathData);
 });
-
-    
