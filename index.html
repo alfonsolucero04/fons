@@ -3,10 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alfonso Profile</title>
+    <title>Rounded Containers Side-by-Side</title>
+    <script src="data.js" defer></script>
+    <script src="script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/54bec1199743505.6656dc543e183.png">
-    <h1>test</h1>
+    <div id="coordinates">X: <span id="xCoord"></span>, Y: <span id="yCoord"></span></div>
+    <div class="main-container">
+        <div class="left-container" id="leftContainer">Left Content Here</div>  
+        <div class="right-container">
+            <a href="#" id="backLink" class="back-link" style="display:none;">Back to Full Map</a>
+            <div id="coordinates">X: <span id="xCoord"></span>, Y: <span id="yCoord"></span></div>
+                                         <!--leftside-top-rightside-zoom-->
+            <svg id="svgContainer" viewBox="800 100 500 6200">
+                <image id="locator" href="" width="24" height="24" />
+            </svg>
+        </div>
+    </div>
 </body>
 </html>
+
+
+
+

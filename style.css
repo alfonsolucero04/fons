@@ -1,0 +1,212 @@
+/* Prevent all scrolling */
+html, body {
+    margin: 0;
+    padding: 20px; /* Ensures consistent padding on all sides */
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* No scrolling */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Flexbox layout for side-by-side containers */
+.main-container {
+    display: flex;  
+    width: calc(100vw - 40px);  /* Full width minus 20px padding on both sides */
+    height: calc(100vh - 40px); /* Full height minus 20px padding on top and bottom */
+    gap: 20px; /* Space between left and right containers */
+    box-sizing: border-box; /* Ensures padding is included in the dimensions */
+}
+
+/* Shared styles for both containers */
+.left-container, .right-container {
+    border-radius: 20px; /* Rounded corners */
+    background-color: rgba(173, 216, 230, 0.4); /* Light blue with 40% opacity */
+    padding: 20px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    height: 100%; /* Fill the available height */
+    box-sizing: border-box;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+/* Left Container (30%) */
+.left-container {
+    width: 30%;
+}
+
+/* Right Container (70%) */
+.right-container {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative; /* To position zoom controls */
+}
+
+/* Ensure SVG is contained properly */
+#svgContainer {
+    width: 100%;
+    height: 100%;
+    border: 1px solid black; /* Debugging border */
+    transition: transform 0.5s ease-in-out; /* Smooth zoom effect */
+}
+
+#svgContainer.dragging {
+    cursor: grabbing; /* Indicate active dragging */
+}
+
+/* Zoom controls */
+.svg-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.svg-controls button {
+    margin: 5px;
+    padding: 10px;
+    font-size: 14px;
+}
+
+/* Style the paths */
+path {
+    stroke: black;
+    stroke-width: 2;
+    fill: transparent; /* Ensures the entire path is hoverable */
+    transition: fill 0.5s ease-in-out, stroke 0.3s ease; /* Smooth fill transition effect */
+}
+
+/* Highlight paths on hover */
+path:hover {
+    stroke: red;
+    fill: rgba(255, 0, 0, 0.5); /* Adds a slight fill on hover */
+}
+
+/* Style the stations */
+.station-circle {
+    fill: blue;
+    stroke: black;
+    stroke-width: 1;
+}
+
+.station-label {
+    fill: black;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    text-anchor: middle;
+    pointer-events: none; /* Prevent text from capturing mouse events */
+}
+.back-link {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s, opacity 0.3s;
+    opacity: 0.7; /* Initial opacity value */
+}
+
+.back-link:hover {
+    background-color: #000;
+    color: #fff;
+    opacity: 1; /* Ensure opacity is set to 1 on hover */
+}
+/* Tooltip styling */
+.tooltip {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    display: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Fade-in effect */
+}
+
+/* Bullet points for stations */
+.tooltip ul {
+    list-style-type: disc;
+    padding-left: 20px; /* Indent bullet points */
+}
+
+.tooltip li {
+    margin-bottom: 5px;
+    cursor: pointer; /* Makes the list item clickable */
+}
+
+.tooltip li:hover {
+    color: blue;
+    text-decoration: underline;
+}
+
+/* Station details container styling */
+.station-details {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Gallery images */
+.gallery img {
+    width: 250px; /* Adjust the size of the gallery images */
+    margin: 5px;
+    border-radius: 5px;
+    transition: transform 0.5s ease-in-out; /* Smooth zoom effect */
+}
+
+.gallery img:hover {
+    transform: scale(1.2); /* Zoom in effect */
+}
+
+/* Fade-in animations */
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Fade-in animation for paths */
+.fade-in-path {
+    opacity: 0;
+    animation: fadeInPath 3s forwards;
+}
+
+@keyframes fadeInPath {
+    to {
+        opacity: 1;
+    }
+}
+
+
+
+
+#coordinates {
+    position: absolute; /* Ensures it follows the mouse */
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: none; /* Hide initially */
+    pointer-events: none; /* Prevent interference with clicks */
+}
